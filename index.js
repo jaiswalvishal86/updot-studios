@@ -18,8 +18,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
     "scrollDisabledSection"
   );
 
+  new CircleType(document.getElementById("cookies"));
+
   const handleSectionEnter = () => {
     // Add an event listener to the section to disable arrow key scrolling
+
     document.addEventListener("keydown", function (e) {
       // Check if the pressed key is an arrow key (ArrowUp, ArrowDown, ArrowLeft, or ArrowRight)
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
@@ -36,6 +39,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
           // Call the function when the section enters the viewport
           handleSectionEnter();
           document.addEventListener("keydown", handleKeyPress);
+        } else {
+          document.removeEventListener("keydown", handleKeyPress);
         }
       });
     },
@@ -103,7 +108,17 @@ window.addEventListener("DOMContentLoaded", (event) => {
     .to(".grain_container", {
       display: "block",
       duration: 0.01,
-    });
+    })
+    .fromTo(
+      ".cookies_container",
+      {
+        opacity: 0,
+      },
+      {
+        opacity: 1,
+        duration: 0.4,
+      }
+    );
   text.innerHTML = 100;
 
   // Split the text up
@@ -131,8 +146,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
     let tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".studios_about__wrapper",
-        start: "top+=200px bottom",
-        end: "bottom+=200px bottom",
+        start: "top+=150px bottom",
+        end: "bottom+=100px bottom",
         scrub: 1,
       },
     });
@@ -141,7 +156,17 @@ window.addEventListener("DOMContentLoaded", (event) => {
       width: "0%",
       duration: 1.2,
       stagger: 0.2,
-    });
+    }).fromTo(
+      ".highlighter",
+      {
+        width: "0%",
+      },
+      {
+        width: "100%",
+        ease: "power4.easeOut",
+        duration: 2,
+      }
+    );
   }
 
   let score = 0;
