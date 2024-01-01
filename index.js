@@ -52,12 +52,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   var options = {
     animate: true,
-    patternWidth: 68,
-    patternHeight: 80,
-    grainOpacity: 0.1,
-    grainDensity: 1,
-    grainWidth: 1,
-    grainHeight: 1,
+    patternWidth: 100,
+    patternHeight: 100,
+    grainOpacity: 0.05,
+    grainDensity: 1.25,
+    grainWidth: 2,
+    grainHeight: 2,
   };
 
   grained("#grain", options);
@@ -109,16 +109,14 @@ window.addEventListener("DOMContentLoaded", (event) => {
       display: "block",
       duration: 0.01,
     })
-    .fromTo(
-      ".cookies_container",
-      {
-        opacity: 0,
-      },
-      {
-        opacity: 1,
-        duration: 0.4,
-      }
-    );
+    .to(".cookies_container", {
+      opacity: 1,
+      duration: 0.4,
+    })
+    .to(".studio_header__marquee", {
+      opacity: 1,
+      duration: 0.4,
+    });
   text.innerHTML = 100;
 
   // Split the text up
@@ -126,47 +124,59 @@ window.addEventListener("DOMContentLoaded", (event) => {
     typeSplit = new SplitType(".studios_about__content", {
       types: "lines, words",
     });
-    $(".word").append("<div class='line-mask'></div>");
+    // $(".word").append("<div class='line-mask'></div>");
     createAnimation();
   }
 
   runSplit();
 
-  // Register GSAP plugins
-  // gsap.registerPlugin(ScrollTrigger);
-
   // Create staggered animation
   function createAnimation() {
-    let allMasks = $(".word")
-      .map(function () {
-        return $(this).find(".line-mask");
-      })
-      .get();
+    // let allMasks = $(".word")
+    //   .map(function () {
+    //     return $(this).find(".line-mask");
+    //   })
+    //   .get();
 
     let tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".studios_about__wrapper",
-        start: "top+=150px bottom",
-        end: "bottom+=100px bottom",
+        start: "top+=400px bottom",
+        end: "bottom+=300px bottom",
         scrub: 1,
       },
     });
 
-    tl.to(allMasks, {
-      width: "0%",
-      duration: 1.2,
-      stagger: 0.2,
-    }).fromTo(
-      ".highlighter",
-      {
-        width: "0%",
-      },
-      {
-        width: "100%",
-        ease: "power4.easeOut",
-        duration: 2,
-      }
-    );
+    tl
+      // .to(allMasks, {
+      //   width: "0%",
+      //   duration: 1.2,
+      //   stagger: 0.2,
+      // })
+      .fromTo(
+        typeSplit.lines,
+        {
+          opacity: 0,
+          x: -100,
+        },
+        {
+          opacity: 1,
+          x: 0,
+          stagger: 0.2,
+          duration: 0.8,
+        }
+      )
+      .fromTo(
+        ".highlighter",
+        {
+          width: "0%",
+        },
+        {
+          width: "100%",
+          ease: "power4.easeOut",
+          duration: 2,
+        }
+      );
   }
 
   let score = 0;
