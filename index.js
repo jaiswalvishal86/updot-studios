@@ -18,6 +18,13 @@ window.addEventListener("DOMContentLoaded", (event) => {
     "scrollDisabledSection"
   );
 
+  let pixel = { value: 0.98 };
+
+  let image = document.querySelector(".updot_studio__logo");
+  let pixelate = new Pixelate(image, {
+    amount: pixel.value,
+  });
+
   new CircleType(document.getElementById("cookies"));
 
   const handleSectionEnter = () => {
@@ -62,20 +69,23 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   grained("#grain", options);
 
-  window.odometerOptions = {
-    duration: 5000,
-    theme: "minimal",
-    animation: "count",
-  };
+  // window.odometerOptions = {
+  //   duration: 5000,
+  //   theme: "minimal",
+  //   animation: "count",
+  // };
 
-  od = new Odometer({
-    el: text,
-    value: 1,
-    format: "",
-    theme: "minimal",
-  });
+  // od = new Odometer({
+  //   el: text,
+  //   value: 1,
+  //   format: "",
+  //   theme: "minimal",
+  // });
 
   const tlLoader = gsap.timeline({
+    // onUpdate: () => {
+    //   pixelate.setAmount(pixel.value).render();
+    // },
     onComplete: () => {
       bodyScroll.style.overflow = "auto";
       bodyScroll.style.height = "auto";
@@ -83,28 +93,32 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
 
   tlLoader
-    .to(".studio_counter", 5, {
-      fontWeight: 800,
+    .to(pixel, {
+      value: 0,
+      duration: 4,
     })
-    .to(".black_hidden__wrapper", {
-      height: "100%",
-      duration: 1,
-      ease: "power4.easeOut",
-    })
-    .to(".studio_counter__wrapper", {
-      display: "none",
-      duration: 0.01,
-    })
-    .to(
-      ".studio_black__wrapper",
-      {
-        height: "0%",
-        duration: 1,
-        ease: "sine.easeOut",
-        stagger: { from: "left", amount: 0.6, ease: "power4.easeInOut" },
-      },
-      "<"
-    )
+    // .to(".studio_counter", 5, {
+    //   fontWeight: 800,
+    // })
+    // .to(".black_hidden__wrapper", {
+    //   height: "100%",
+    //   duration: 1,
+    //   ease: "power4.easeOut",
+    // })
+    // .to(".studio_counter__wrapper", {
+    //   display: "none",
+    //   duration: 0.01,
+    // })
+    // .to(
+    //   ".studio_black__wrapper",
+    //   {
+    //     height: "0%",
+    //     duration: 1,
+    //     ease: "sine.easeOut",
+    //     stagger: { from: "left", amount: 0.6, ease: "power4.easeInOut" },
+    //   },
+    //   "<"
+    // )
     .to(".grain_container", {
       display: "block",
       duration: 0.01,
@@ -141,8 +155,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
     let tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".studios_about__wrapper",
-        start: "top+=400px bottom",
-        end: "bottom+=300px bottom",
+        start: "top+=200px bottom",
+        end: "bottom+=200px bottom",
         scrub: 1,
       },
     });
@@ -154,16 +168,14 @@ window.addEventListener("DOMContentLoaded", (event) => {
       //   stagger: 0.2,
       // })
       .fromTo(
-        typeSplit.lines,
+        typeSplit.words,
         {
-          opacity: 0,
-          x: -100,
+          opacity: 0.2,
         },
         {
           opacity: 1,
-          x: 0,
           stagger: 0.2,
-          duration: 0.8,
+          duration: 0.5,
         }
       )
       .fromTo(
