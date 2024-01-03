@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     "scrollDisabledSection"
   );
 
-  let pixel = { value: 0.98 };
+  let pixel = { value: 1 };
 
   let image = document.querySelector(".updot_studio__logo");
   let pixelate = new Pixelate(image, {
@@ -31,8 +31,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // Add an event listener to the section to disable arrow key scrolling
 
     document.addEventListener("keydown", function (e) {
+      console.log(e);
       // Check if the pressed key is an arrow key (ArrowUp, ArrowDown, ArrowLeft, or ArrowRight)
-      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      if (
+        ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
+      ) {
         // Prevent the default scrolling behavior
         e.preventDefault();
       }
@@ -83,20 +86,37 @@ window.addEventListener("DOMContentLoaded", (event) => {
   // });
 
   const tlLoader = gsap.timeline({
-    // onUpdate: () => {
-    //   pixelate.setAmount(pixel.value).render();
-    // },
+    onUpdate: () => {
+      pixelate.setAmount(pixel.value).render();
+    },
+    defaults: {
+      delay: 0.5,
+    },
+    ease: "power4.easeInOut",
     onComplete: () => {
       bodyScroll.style.overflow = "auto";
       bodyScroll.style.height = "auto";
     },
   });
+  tlLoader.set(pixel, { value: 0.97, delay: 0 });
+  tlLoader.set(pixel, { value: 0.92 });
+  tlLoader.set(pixel, { value: 0.9 });
+  tlLoader.set(pixel, { value: 0.86 });
+  tlLoader.set(pixel, { value: 0.78 });
+  // tlLoader.set(pixel, { value: 0.71 });
+  // tlLoader.set(pixel, { value: 0.68 });
+  // tlLoader.set(pixel, { value: 0.64 });
+  tlLoader.set(pixel, { value: 0 });
+
+  window.addEventListener("resize", function () {
+    pixelate.setWidth(image.parentNode.clientWidth).render();
+  });
 
   tlLoader
-    .to(pixel, {
-      value: 0,
-      duration: 4,
-    })
+    // .to(pixel, {
+    //   value: 0,
+    //   duration: 4,
+    // })
     // .to(".studio_counter", 5, {
     //   fontWeight: 800,
     // })
@@ -191,7 +211,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       );
   }
 
-  let score = 0;
+  // let score = 0;
 
   const scale = 40;
 
@@ -329,8 +349,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       }
 
       if (clear) {
-        score += 10;
-        scoreElement.innerText = score;
+        // score += 10;
+        // scoreElement.innerText = score;
         let r = new Array(tWidth).fill(0);
         r.push(1);
         r.unshift(1);
@@ -420,11 +440,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
     requestAnimationFrame(update);
   }
 
-  play.addEventListener("click", () => {
-    gameOverElement.style.display = "none";
-    score = 0;
-    return initArena();
-  });
+  // play.addEventListener("click", () => {
+  //   gameOverElement.style.display = "none";
+  //   // score = 0;
+  //   return initArena();
+  // });
 
   document.addEventListener("keydown", (event) => {
     if (event.keyCode === 37 && interval - 1) {
@@ -442,6 +462,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
         player.matrix = rotateMatrix(player.matrix, -1);
     } else if (event.keyCode === 32) {
       interval = 1;
+    } else if (event.keyCode === 82 && collides(player, arena)) {
+      gameOverElement.style.display = "none";
+      // score = 0;
+      return initArena();
     }
   });
   function handleKeyPress(event) {
