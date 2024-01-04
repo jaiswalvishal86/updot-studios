@@ -2,9 +2,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
   const text = document.getElementById("counter");
   const bodyScroll = document.getElementById("bodyScroll");
   let aboutSplitText = new SplitType("#aboutText", { type: "chars" });
-
   const logoList = document.querySelectorAll(".updot_studios__logo-wrapper");
-
   const logos = document.querySelectorAll(".updot_studios__logo");
 
   const canvas = document.getElementById("tetris");
@@ -18,12 +16,94 @@ window.addEventListener("DOMContentLoaded", (event) => {
     "scrollDisabledSection"
   );
 
-  let pixel = { value: 1 };
+  const logoCanvas = document.getElementById("canvas1");
+  const logoCTX = logoCanvas.getContext("2d");
 
-  let image = document.querySelector(".updot_studio__logo");
-  let pixelate = new Pixelate(image, {
-    amount: pixel.value,
-  });
+  logoCanvas.width = 1440;
+  logoCanvas.height = 300;
+
+  class Cell {
+    constructor(effect, x, y) {
+      this.effect = effect;
+      this.x = x;
+      this.y = y;
+      this.positionX = 0;
+      this.positionY = 0;
+      this.speedX;
+      this.speedY;
+      this.width = this.effect.cellWidth;
+      this.height = this.effect.cellHeight;
+      this.image = document.getElementById("projectImage");
+      this.slideX = 0;
+      this.slideY = 0;
+      this.randomize = Math.random() * 25 + 10;
+    }
+    draw(context) {
+      context.drawImage(
+        this.image,
+        this.x + this.slideX,
+        this.y + this.slideY,
+        this.width,
+        this.height,
+        this.positionX,
+        this.positionY,
+        this.width,
+        this.height
+      );
+      // context.strokeRect(this.positionX, this.positionY, this.width, this.height);
+    }
+    update() {
+      // this.slideX = Math.random() * 50;
+      // this.slideY = Math.random() * 20;
+      this.speedX = (this.x - this.positionX) / this.randomize;
+      this.speedY = (this.y - this.positionY) / this.randomize;
+      this.positionX += this.speedX;
+      this.positionY += this.speedY;
+    }
+  }
+
+  class Effect {
+    constructor(logoCanvas) {
+      this.logoCanvas = logoCanvas;
+      this.width = this.logoCanvas.width;
+      this.height = this.logoCanvas.height;
+      this.cellWidth = this.width / 80;
+      this.cellHeight = this.height / 20;
+      this.cell = new Cell(this, 0, 0);
+      this.imageGrid = [];
+      this.createGrid();
+    }
+    createGrid() {
+      for (let y = 0; y < this.height; y += this.cellHeight) {
+        for (let x = 0; x < this.width; x += this.cellWidth) {
+          this.imageGrid.push(new Cell(this, x, y));
+        }
+      }
+    }
+    render(context) {
+      this.imageGrid.forEach((cell) => {
+        cell.update();
+        cell.draw(context);
+      });
+    }
+  }
+
+  const effect = new Effect(logoCanvas);
+
+  function animate() {
+    logoCTX.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+    effect.render(logoCTX);
+    requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+
+  // let pixel = { value: 1 };
+
+  // let image = document.querySelector(".updot_studio__logo");
+  // let pixelate = new Pixelate(image, {
+  //   amount: pixel.value,
+  // });
 
   new CircleType(document.getElementById("cookies"));
 
@@ -31,7 +111,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // Add an event listener to the section to disable arrow key scrolling
 
     document.addEventListener("keydown", function (e) {
-      console.log(e);
+      // console.log(e);
       // Check if the pressed key is an arrow key (ArrowUp, ArrowDown, ArrowLeft, or ArrowRight)
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
@@ -62,12 +142,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   var options = {
     animate: true,
-    patternWidth: 100,
-    patternHeight: 100,
+    patternWidth: 500,
+    patternHeight: 500,
     grainOpacity: 0.05,
-    grainDensity: 1.25,
-    grainWidth: 2,
-    grainHeight: 2,
+    grainDensity: 1.4,
+    grainWidth: 2.5,
+    grainHeight: 2.5,
   };
 
   grained("#grain", options);
@@ -86,31 +166,31 @@ window.addEventListener("DOMContentLoaded", (event) => {
   // });
 
   const tlLoader = gsap.timeline({
-    onUpdate: () => {
-      pixelate.setAmount(pixel.value).render();
-    },
-    defaults: {
-      delay: 0.5,
-    },
-    ease: "power4.easeInOut",
+    // onUpdate: () => {
+    //   pixelate.setAmount(pixel.value).render();
+    // },
+    // defaults: {
+    //   delay: 0.5,
+    // },
+    // ease: "power4.easeInOut",
     onComplete: () => {
-      bodyScroll.style.overflow = "auto";
+      bodyScroll.style.overflowY = "auto";
       bodyScroll.style.height = "auto";
     },
   });
-  tlLoader.set(pixel, { value: 0.97, delay: 0 });
-  tlLoader.set(pixel, { value: 0.92 });
-  tlLoader.set(pixel, { value: 0.9 });
-  tlLoader.set(pixel, { value: 0.86 });
-  tlLoader.set(pixel, { value: 0.78 });
+  // tlLoader.set(pixel, { value: 0.97, delay: 0 });
+  // tlLoader.set(pixel, { value: 0.92 });
+  // tlLoader.set(pixel, { value: 0.9 });
+  // tlLoader.set(pixel, { value: 0.86 });
+  // tlLoader.set(pixel, { value: 0.78 });
   // tlLoader.set(pixel, { value: 0.71 });
   // tlLoader.set(pixel, { value: 0.68 });
   // tlLoader.set(pixel, { value: 0.64 });
-  tlLoader.set(pixel, { value: 0 });
+  // tlLoader.set(pixel, { value: 0 });
 
-  window.addEventListener("resize", function () {
-    pixelate.setWidth(image.parentNode.clientWidth).render();
-  });
+  // window.addEventListener("resize", function () {
+  //   pixelate.setWidth(image.parentNode.clientWidth).render();
+  // });
 
   tlLoader
     // .to(pixel, {
@@ -206,7 +286,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         {
           width: "100%",
           ease: "power4.easeOut",
-          duration: 2,
+          duration: 5,
         }
       );
   }
@@ -478,29 +558,29 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   //Logo Hover
   logoList.forEach(function (logo) {
-    PowerGlitch.glitch(logos, {
-      playMode: "hover",
-      createContainers: true,
-      hideOverflow: true,
-      timing: {
-        duration: 800,
-        iterations: 1,
-        easing: "ease-out",
-      },
-      glitchTimeSpan: {
-        start: 0.05,
-        end: 0.6,
-      },
-      shake: false,
-      slice: {
-        count: 20,
-        velocity: 4,
-        minHeight: 0.02,
-        maxHeight: 0.05,
-        hueRotate: false,
-      },
-      pulse: false,
-    });
+    // PowerGlitch.glitch(logos, {
+    //   playMode: "hover",
+    //   createContainers: true,
+    //   hideOverflow: true,
+    //   timing: {
+    //     duration: 800,
+    //     iterations: 1,
+    //     easing: "ease-out",
+    //   },
+    //   glitchTimeSpan: {
+    //     start: 0.05,
+    //     end: 0.6,
+    //   },
+    //   shake: false,
+    //   slice: {
+    //     count: 20,
+    //     velocity: 4,
+    //     minHeight: 0.02,
+    //     maxHeight: 0.05,
+    //     hueRotate: false,
+    //   },
+    //   pulse: false,
+    // });
     let tlm = new TimelineMax({ paused: true });
     let top = logo.querySelector(".top");
     let bottom = logo.querySelector(".bottom");
@@ -515,7 +595,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         y: "random(-5, 5, 1)",
         ease: Power4.easeInOut,
       })
-      .to(logo, { duration: 0.03, x: 0, y: 0, ease: Power4.easeInOut })
+      .to(logo, { duration: 0.03, x: 1, y: 0, ease: Power4.easeInOut })
       .to(logo, { duration: 0.03, opacity: 0.5, ease: Power4.easeInOut })
       .to(logo, { duration: 0.04, opacity: 1, ease: Power4.easeInOut })
       .to(logo, {
