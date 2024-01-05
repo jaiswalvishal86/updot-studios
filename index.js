@@ -1,16 +1,49 @@
 window.addEventListener("DOMContentLoaded", (event) => {
-  const text = document.getElementById("counter");
+  // const text = document.getElementById("counter");
   const bodyScroll = document.getElementById("bodyScroll");
-  let aboutSplitText = new SplitType("#aboutText", { type: "chars" });
+  // let aboutSplitText = new SplitType("#aboutText", { type: "chars" });
   const logoList = document.querySelectorAll(".updot_studios__logo-wrapper");
   const logos = document.querySelectorAll(".updot_studios__logo");
 
   const canvas = document.getElementById("tetris");
   const gameScreen = document.getElementById("game_screen");
   const gameOverElement = document.getElementById("game_over");
-  const play = document.getElementById("play");
-  const scoreElement = document.getElementById("score");
+  // const play = document.getElementById("play");
+  // const scoreElement = document.getElementById("score");
   const ctx = canvas.getContext("2d");
+  const titles = document.querySelectorAll(".studio_process__heading");
+  let headTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".studio_process__wrapper",
+      start: "top top",
+      end: "bottom+=350px top",
+      scrub: 1,
+    },
+  });
+  titles.forEach(function (title) {
+    if (title) {
+      headTl
+        .to(".distort feFlood", {
+          attr: {
+            x: "1",
+            y: "1",
+            height: "10",
+            width: "10",
+          },
+          ease: "circ.out",
+        })
+        .to(
+          ".distort feMorphology",
+          {
+            attr: {
+              radius: "1",
+            },
+            ease: "circ.out",
+          },
+          "<"
+        );
+    }
+  });
 
   const scrollDisabledSection = document.getElementById(
     "scrollDisabledSection"
@@ -27,8 +60,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.effect = effect;
       this.x = x;
       this.y = y;
-      this.positionX = 0;
-      this.positionY = 0;
+      this.positionX = this.effect.width * 0.5;
+      this.positionY = this.effect.height * 0.5;
       this.speedX;
       this.speedY;
       this.width = this.effect.cellWidth;
@@ -36,7 +69,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.image = document.getElementById("projectImage");
       this.slideX = 0;
       this.slideY = 0;
-      this.randomize = Math.random() * 25 + 10;
+      this.randomize = Math.random() * 40 + 10;
     }
     draw(context) {
       context.drawImage(
@@ -231,7 +264,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       opacity: 1,
       duration: 0.4,
     });
-  text.innerHTML = 100;
+  // text.innerHTML = 100;
 
   // Split the text up
   function runSplit() {
