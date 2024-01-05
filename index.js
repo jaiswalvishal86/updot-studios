@@ -175,12 +175,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   var options = {
     animate: true,
-    patternWidth: 500,
-    patternHeight: 500,
+    patternWidth: 100,
+    patternHeight: 100,
     grainOpacity: 0.05,
-    grainDensity: 1.4,
-    grainWidth: 2.5,
-    grainHeight: 2.5,
+    grainDensity: 1.2,
+    grainWidth: 1,
+    grainHeight: 1,
   };
 
   grained("#grain", options);
