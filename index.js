@@ -1,54 +1,76 @@
 window.addEventListener("DOMContentLoaded", (event) => {
-  // const text = document.getElementById("counter");
   const bodyScroll = document.getElementById("bodyScroll");
-  // let aboutSplitText = new SplitType("#aboutText", { type: "chars" });
   const logoList = document.querySelectorAll(".updot_studios__logo-wrapper");
-  const logos = document.querySelectorAll(".updot_studios__logo");
-
-  const canvas = document.getElementById("tetris");
-  const gameScreen = document.getElementById("game_screen");
-  const gameOverElement = document.getElementById("game_over");
-  // const play = document.getElementById("play");
-  // const scoreElement = document.getElementById("score");
-  const ctx = canvas.getContext("2d");
-  const titles = document.querySelectorAll(".studio_process__heading");
-  let headTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: ".studio_process__wrapper",
-      start: "top top",
-      end: "bottom+=350px top",
-      scrub: 1,
-    },
-  });
-  titles.forEach(function (title) {
-    if (title) {
-      headTl
-        .to(".distort feFlood", {
-          attr: {
-            x: "1",
-            y: "1",
-            height: "10",
-            width: "10",
-          },
-          ease: "circ.out",
-        })
-        .to(
-          ".distort feMorphology",
-          {
-            attr: {
-              radius: "1",
-            },
-            ease: "circ.out",
-          },
-          "<"
-        );
-    }
-  });
-
+  // const logos = document.querySelectorAll(".updot_studios__logo");
   const scrollDisabledSection = document.getElementById(
     "scrollDisabledSection"
   );
+  const titles = document.querySelectorAll(".studio_process__heading");
 
+  //Loader Canvas
+  const loaderCanvas = document.getElementById("canvas");
+  const loaderCTX = loaderCanvas.getContext("2d");
+
+  loaderCanvas.width = 100;
+  loaderCanvas.height = 100;
+
+  class Pixel {
+    constructor(loaderEffect) {
+      this.effect = loaderEffect;
+      this.x = 0;
+      this.y = 0;
+      this.size = Math.random() * 5;
+      this.vx = Math.random() * 2 - 1;
+      this.vy = Math.random() * 2 - 1;
+    }
+    draw(context) {
+      context.fillRect(this.x, this.y, this.size, this.size);
+    }
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+    }
+  }
+
+  class LoaderEffect {
+    constructor(width, height) {
+      this.width = width;
+      this.height = height;
+      this.pixelsArray = [];
+      this.image = document.getElementById("loaderLogo");
+      this.centerX = this.width * 0.5;
+      this.centerY = this.height * 0.5;
+      this.x = this.centerX - this.image.width * 0.5;
+      this.y = this.centerY - this.image.height * 0.5;
+    }
+    init(context) {
+      context.drawImage(this.image, this.x, this.y);
+      const pixelData = context.getImageData(0, 0, this.width, this.height);
+      console.log(pixelData);
+    }
+    draw(context) {
+      this.pixelsArray.forEach((pixel) => pixel.draw(context));
+    }
+    update() {
+      this.pixelsArray.forEach((pixel) => pixel.update());
+    }
+  }
+
+  const loaderEffect = new LoaderEffect(
+    loaderCanvas.width,
+    loaderCanvas.height
+  );
+  loaderEffect.init(loaderCTX);
+
+  function logoAnimate() {
+    loaderCTX.clearRect(0, 0, loaderCanvas.width, loaderCanvas.height);
+    loaderEffect.draw(loaderCTX);
+    loaderEffect.update();
+    requestAnimationFrame(logoAnimate);
+  }
+  //logoAnimate();
+
+  //Updot Canvas
   const logoCanvas = document.getElementById("canvas1");
   const logoCTX = logoCanvas.getContext("2d");
 
@@ -69,7 +91,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.image = document.getElementById("projectImage");
       this.slideX = 0;
       this.slideY = 0;
-      this.randomize = Math.random() * 40 + 10;
+      this.randomize = Math.random() * 30 + 1;
     }
     draw(context) {
       context.drawImage(
@@ -128,15 +150,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
     effect.render(logoCTX);
     requestAnimationFrame(animate);
   }
-
-  requestAnimationFrame(animate);
-
-  // let pixel = { value: 1 };
-
-  // let image = document.querySelector(".updot_studio__logo");
-  // let pixelate = new Pixelate(image, {
-  //   amount: pixel.value,
-  // });
 
   new CircleType(document.getElementById("cookies"));
 
@@ -207,51 +220,13 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // },
     // ease: "power4.easeInOut",
     onComplete: () => {
+      requestAnimationFrame(animate);
       bodyScroll.style.overflowY = "auto";
       bodyScroll.style.height = "auto";
     },
   });
-  // tlLoader.set(pixel, { value: 0.97, delay: 0 });
-  // tlLoader.set(pixel, { value: 0.92 });
-  // tlLoader.set(pixel, { value: 0.9 });
-  // tlLoader.set(pixel, { value: 0.86 });
-  // tlLoader.set(pixel, { value: 0.78 });
-  // tlLoader.set(pixel, { value: 0.71 });
-  // tlLoader.set(pixel, { value: 0.68 });
-  // tlLoader.set(pixel, { value: 0.64 });
-  // tlLoader.set(pixel, { value: 0 });
-
-  // window.addEventListener("resize", function () {
-  //   pixelate.setWidth(image.parentNode.clientWidth).render();
-  // });
 
   tlLoader
-    // .to(pixel, {
-    //   value: 0,
-    //   duration: 4,
-    // })
-    // .to(".studio_counter", 5, {
-    //   fontWeight: 800,
-    // })
-    // .to(".black_hidden__wrapper", {
-    //   height: "100%",
-    //   duration: 1,
-    //   ease: "power4.easeOut",
-    // })
-    // .to(".studio_counter__wrapper", {
-    //   display: "none",
-    //   duration: 0.01,
-    // })
-    // .to(
-    //   ".studio_black__wrapper",
-    //   {
-    //     height: "0%",
-    //     duration: 1,
-    //     ease: "sine.easeOut",
-    //     stagger: { from: "left", amount: 0.6, ease: "power4.easeInOut" },
-    //   },
-    //   "<"
-    // )
     .to(".grain_container", {
       display: "block",
       duration: 0.01,
@@ -264,7 +239,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
       opacity: 1,
       duration: 0.4,
     });
-  // text.innerHTML = 100;
 
   // Split the text up
   function runSplit() {
@@ -325,6 +299,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
   }
 
   // let score = 0;
+  const canvas = document.getElementById("tetris");
+  const gameScreen = document.getElementById("game_screen");
+  const gameOverElement = document.getElementById("game_over");
+  const ctx = canvas.getContext("2d");
 
   const scale = 40;
 
@@ -589,31 +567,41 @@ window.addEventListener("DOMContentLoaded", (event) => {
     document.removeEventListener("keydown", handleKeyPress);
   }
 
+  let headTl = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".studio_process__wrapper",
+      start: "top top",
+      end: "bottom+=350px top",
+      scrub: 1,
+    },
+  });
+  titles.forEach(function (title) {
+    if (title) {
+      headTl
+        .to(".distort feFlood", {
+          attr: {
+            x: "1",
+            y: "1",
+            height: "10",
+            width: "10",
+          },
+          ease: "circ.out",
+        })
+        .to(
+          ".distort feMorphology",
+          {
+            attr: {
+              radius: "1",
+            },
+            ease: "circ.out",
+          },
+          "<"
+        );
+    }
+  });
+
   //Logo Hover
   logoList.forEach(function (logo) {
-    // PowerGlitch.glitch(logos, {
-    //   playMode: "hover",
-    //   createContainers: true,
-    //   hideOverflow: true,
-    //   timing: {
-    //     duration: 800,
-    //     iterations: 1,
-    //     easing: "ease-out",
-    //   },
-    //   glitchTimeSpan: {
-    //     start: 0.05,
-    //     end: 0.6,
-    //   },
-    //   shake: false,
-    //   slice: {
-    //     count: 20,
-    //     velocity: 4,
-    //     minHeight: 0.02,
-    //     maxHeight: 0.05,
-    //     hueRotate: false,
-    //   },
-    //   pulse: false,
-    // });
     let tlm = new TimelineMax({ paused: true });
     let top = logo.querySelector(".top");
     let bottom = logo.querySelector(".bottom");
