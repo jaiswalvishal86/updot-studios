@@ -15,20 +15,24 @@ window.addEventListener("DOMContentLoaded", (event) => {
   loaderCanvas.height = 100;
 
   class Pixel {
-    constructor(loaderEffect) {
+    constructor(loaderEffect, x, y, color) {
       this.effect = loaderEffect;
-      this.x = 0;
-      this.y = 0;
-      this.size = Math.random() * 5;
-      this.vx = Math.random() * 2 - 1;
-      this.vy = Math.random() * 2 - 1;
+      this.x = x;
+      this.y = Math.random() * this.effect.height;
+      this.originX = Math.floor(x);
+      this.originY = Math.floor(y);
+      this.color = color;
+      this.size = this.effect.gap;
+      this.vx = 0;
+      this.vy = 0;
     }
     draw(context) {
+      context.fillStyle = this.color;
       context.fillRect(this.x, this.y, this.size, this.size);
     }
     update() {
-      this.x += this.vx;
-      this.y += this.vy;
+      this.x += this.originX - this.x;
+      this.y += (this.originY - this.y) * 0.05;
     }
   }
 
@@ -42,11 +46,31 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.centerY = this.height * 0.5;
       this.x = this.centerX - this.image.width * 0.5;
       this.y = this.centerY - this.image.height * 0.5;
+      this.gap = 3;
     }
     init(context) {
       context.drawImage(this.image, this.x, this.y);
-      const pixelData = context.getImageData(0, 0, this.width, this.height);
+      const pixelData = context.getImageData(
+        0,
+        0,
+        this.width,
+        this.height
+      ).data;
       console.log(pixelData);
+      for (let y = 0; y < this.height; y += this.gap) {
+        for (let x = 0; x < this.width; x += this.gap) {
+          const index = (y * this.width + x) * 4;
+          const red = pixelData[index];
+          const green = pixelData[index + 1];
+          const blue = pixelData[index + 2];
+          const alpha = pixelData[index + 3];
+          const color = "rgb(" + red + "," + green + "," + blue + ")";
+
+          if (alpha == 255) {
+            this.pixelsArray.push(new Pixel(this, x, y, color));
+          }
+        }
+      }
     }
     draw(context) {
       this.pixelsArray.forEach((pixel) => pixel.draw(context));
@@ -61,6 +85,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     loaderCanvas.height
   );
   loaderEffect.init(loaderCTX);
+  console.log(loaderEffect);
 
   function logoAnimate() {
     loaderCTX.clearRect(0, 0, loaderCanvas.width, loaderCanvas.height);
@@ -68,7 +93,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     loaderEffect.update();
     requestAnimationFrame(logoAnimate);
   }
-  //logoAnimate();
+  logoAnimate();
 
   //Updot Canvas
   const logoCanvas = document.getElementById("canvas1");
@@ -227,10 +252,23 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
 
   tlLoader
-    .to(".grain_container", {
-      display: "block",
-      duration: 0.01,
-    })
+    .to(
+      ".studio_loader__wrapper",
+      {
+        opacity: 0,
+        duration: 1,
+        display: "none",
+      },
+      "+1.5"
+    )
+    .to(
+      ".grain_container",
+      {
+        display: "block",
+        duration: 0.01,
+      },
+      "+0.1"
+    )
     .to(".cookies_container", {
       opacity: 1,
       duration: 0.4,
