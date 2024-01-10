@@ -18,7 +18,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     constructor(loaderEffect, x, y, color) {
       this.effect = loaderEffect;
       this.x = x;
-      this.y = Math.random() * this.effect.height;
+      this.y = 1 - Math.random() * this.effect.height;
       this.originX = Math.floor(x);
       this.originY = Math.floor(y);
       this.color = color;
@@ -85,7 +85,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
     loaderCanvas.height
   );
   loaderEffect.init(loaderCTX);
-  console.log(loaderEffect);
 
   function logoAnimate() {
     loaderCTX.clearRect(0, 0, loaderCanvas.width, loaderCanvas.height);
@@ -245,7 +244,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // },
     // ease: "power4.easeInOut",
     onComplete: () => {
-      requestAnimationFrame(animate);
+      animate();
       bodyScroll.style.overflowY = "auto";
       bodyScroll.style.height = "auto";
     },
@@ -256,10 +255,10 @@ window.addEventListener("DOMContentLoaded", (event) => {
       ".studio_loader__wrapper",
       {
         opacity: 0,
-        duration: 1,
+        duration: 0.5,
         display: "none",
       },
-      "+1.5"
+      "+2"
     )
     .to(
       ".grain_container",
@@ -319,8 +318,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         },
         {
           opacity: 1,
+          ease: "power4.inOut",
           stagger: 0.2,
-          duration: 0.5,
+          // duration: 0.5,
         }
       )
       .fromTo(
