@@ -56,7 +56,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         this.width,
         this.height
       ).data;
-      console.log(pixelData);
+
       for (let y = 0; y < this.height; y += this.gap) {
         for (let x = 0; x < this.width; x += this.gap) {
           const index = (y * this.width + x) * 4;
@@ -222,27 +222,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   grained("#grain", options);
 
-  // window.odometerOptions = {
-  //   duration: 5000,
-  //   theme: "minimal",
-  //   animation: "count",
-  // };
-
-  // od = new Odometer({
-  //   el: text,
-  //   value: 1,
-  //   format: "",
-  //   theme: "minimal",
-  // });
-
   const tlLoader = gsap.timeline({
-    // onUpdate: () => {
-    //   pixelate.setAmount(pixel.value).render();
-    // },
-    // defaults: {
-    //   delay: 0.5,
-    // },
-    // ease: "power4.easeInOut",
     onComplete: () => {
       animate();
       bodyScroll.style.overflowY = "auto";
@@ -282,7 +262,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     typeSplit = new SplitType(".studios_about__content", {
       types: "lines, words",
     });
-    // $(".word").append("<div class='line-mask'></div>");
+    $(".word").append("<div class='line-mask'></div>");
     createAnimation();
   }
 
@@ -290,39 +270,37 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   // Create staggered animation
   function createAnimation() {
-    // let allMasks = $(".word")
-    //   .map(function () {
-    //     return $(this).find(".line-mask");
-    //   })
-    //   .get();
+    let allMasks = $(".word")
+      .map(function () {
+        return $(this).find(".line-mask");
+      })
+      .get();
 
     let tl = gsap.timeline({
       scrollTrigger: {
         trigger: ".studios_about__wrapper",
-        start: "top+=200px bottom",
-        end: "bottom+=200px bottom",
+        start: "top+=350px bottom",
+        end: "bottom+=250px bottom",
         scrub: 1,
       },
     });
 
-    tl
-      // .to(allMasks, {
-      //   width: "0%",
-      //   duration: 1.2,
-      //   stagger: 0.2,
-      // })
-      .fromTo(
-        typeSplit.words,
-        {
-          opacity: 0.2,
-        },
-        {
-          opacity: 1,
-          ease: "power4.inOut",
-          stagger: 0.2,
-          // duration: 0.5,
-        }
-      )
+    tl.to(allMasks, {
+      width: "0%",
+      duration: 1.2,
+      stagger: 0.2,
+    })
+      // .fromTo(
+      //   typeSplit.words,
+      //   {
+      //     opacity: 0.2,
+      //   },
+      //   {
+      //     opacity: 1,
+      //     ease: "power4.inOut",
+      //     stagger: 0.2,
+      //   }
+      // )
       .fromTo(
         ".highlighter",
         {
