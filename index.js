@@ -32,7 +32,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     }
     update() {
       this.x += this.originX - this.x;
-      this.y += (this.originY - this.y) * 0.05;
+      this.y += (this.originY - this.y) * 0.1;
     }
   }
 
@@ -107,7 +107,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.x = x;
       this.y = y;
       this.positionX = this.effect.width * 0.5;
-      this.positionY = this.effect.height * 0.5;
+      this.positionY = this.effect.height;
       this.speedX;
       this.speedY;
       this.width = this.effect.cellWidth;
@@ -115,7 +115,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.image = document.getElementById("projectImage");
       this.slideX = 0;
       this.slideY = 0;
-      this.randomize = Math.random() * 30 + 1;
+      this.randomize = Math.random() * 10 + 1;
+      this.vx = 0;
+      this.vy = 0;
+      this.ease = 0.05;
+      this.friction = 0.9;
     }
     draw(context) {
       context.drawImage(
@@ -132,6 +136,17 @@ window.addEventListener("DOMContentLoaded", (event) => {
       // context.strokeRect(this.positionX, this.positionY, this.width, this.height);
     }
     update() {
+      const dx = this.effect.mouse.x - this.x;
+      const dy = this.effect.mouse.y - this.y;
+      const distace = Math.hypot(dx, dy);
+      if (distace < this.effect.mouse.radius) {
+        const angle = Math.atan2(dy, dx);
+        const force = -this.effect.mouse.radius / distace;
+        this.vx += force * Math.cos(angle);
+        this.vy += force * Math.sin(angle);
+      }
+      this.slideX += (this.vx *= this.friction) - this.slideX * this.ease;
+      this.slideY += (this.vy *= this.friction) - this.slideY * this.ease;
       // this.slideX = Math.random() * 50;
       // this.slideY = Math.random() * 20;
       this.speedX = (this.x - this.positionX) / this.randomize;
@@ -146,11 +161,24 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.logoCanvas = logoCanvas;
       this.width = this.logoCanvas.width;
       this.height = this.logoCanvas.height;
-      this.cellWidth = this.width / 80;
-      this.cellHeight = this.height / 20;
+      this.cellWidth = this.width / 100;
+      this.cellHeight = this.height / 25;
       this.cell = new Cell(this, 0, 0);
       this.imageGrid = [];
       this.createGrid();
+      this.mouse = {
+        radius: 80,
+        x: undefined,
+        y: undefined,
+      };
+      this.logoCanvas.addEventListener("mousemove", (event) => {
+        this.mouse.x = event.offsetX;
+        this.mouse.y = event.offsetY;
+      });
+      this.logoCanvas.addEventListener("mouseleave", (event) => {
+        this.mouse.x = undefined;
+        this.mouse.y = undefined;
+      });
     }
     createGrid() {
       for (let y = 0; y < this.height; y += this.cellHeight) {
