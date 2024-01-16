@@ -10,6 +10,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
   //Loader Canvas
   const loaderCanvas = document.getElementById("canvas");
   const loaderCTX = loaderCanvas.getContext("2d");
+  let logoCanvas1 = true;
 
   loaderCanvas.width = 100;
   loaderCanvas.height = 100;
@@ -86,17 +87,18 @@ window.addEventListener("DOMContentLoaded", (event) => {
   );
   loaderEffect.init(loaderCTX);
 
-  function logoAnimate() {
-    loaderCTX.clearRect(0, 0, loaderCanvas.width, loaderCanvas.height);
-    loaderEffect.draw(loaderCTX);
-    loaderEffect.update();
-    requestAnimationFrame(logoAnimate);
-  }
-  logoAnimate();
+  // function logoAnimate() {
+  //   loaderCTX.clearRect(0, 0, loaderCanvas.width, loaderCanvas.height);
+  //   loaderEffect.draw(loaderCTX);
+  //   loaderEffect.update();
+  //   requestAnimationFrame(logoAnimate);
+  // }
+  // logoAnimate();
 
   //Updot Canvas
   const logoCanvas = document.getElementById("canvas1");
   const logoCTX = logoCanvas.getContext("2d");
+  let updotCanvas1 = false;
 
   logoCanvas.width = 1440;
   logoCanvas.height = 300;
@@ -198,10 +200,28 @@ window.addEventListener("DOMContentLoaded", (event) => {
   const effect = new Effect(logoCanvas);
 
   function animate() {
-    logoCTX.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
-    effect.render(logoCTX);
+    if (logoCanvas1) {
+      loaderCTX.clearRect(0, 0, loaderCanvas.width, loaderCanvas.height);
+      loaderEffect.draw(loaderCTX);
+      loaderEffect.update();
+    }
+
+    if (updotCanvas1) {
+      logoCTX.clearRect(0, 0, logoCanvas.width, logoCanvas.height);
+      effect.render(logoCTX);
+    }
+
     requestAnimationFrame(animate);
   }
+  animate();
+
+  setTimeout(() => {
+    logoCanvas1 = false;
+  }, 2000);
+
+  setTimeout(() => {
+    updotCanvas1 = true;
+  }, 3000);
 
   new CircleType(document.getElementById("cookies"));
 
@@ -252,7 +272,6 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   const tlLoader = gsap.timeline({
     onComplete: () => {
-      animate();
       bodyScroll.style.overflowY = "auto";
       bodyScroll.style.height = "auto";
     },
