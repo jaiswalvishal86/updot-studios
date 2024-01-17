@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.centerY = this.height * 0.5;
       this.x = this.centerX - this.image.width * 0.5;
       this.y = this.centerY - this.image.height * 0.5;
-      this.gap = 3;
+      this.gap = 8;
     }
     init(context) {
       context.drawImage(this.image, this.x, this.y);
@@ -163,8 +163,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.logoCanvas = logoCanvas;
       this.width = this.logoCanvas.width;
       this.height = this.logoCanvas.height;
-      this.cellWidth = this.width / 100;
-      this.cellHeight = this.height / 25;
+      this.cellWidth = this.width / 24;
+      this.cellHeight = this.height / 6;
       this.cell = new Cell(this, 0, 0);
       this.imageGrid = [];
       this.createGrid();
