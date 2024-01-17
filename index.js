@@ -101,7 +101,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
   let updotCanvas1 = false;
 
   logoCanvas.width = 1440;
-  logoCanvas.height = 300;
+  logoCanvas.height = 320;
 
   class Cell {
     constructor(effect, x, y) {
@@ -120,7 +120,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.randomize = Math.random() * 10 + 1;
       this.vx = 0;
       this.vy = 0;
-      this.ease = 0.05;
+      this.ease = 0.06;
       this.friction = 0.9;
     }
     draw(context) {
@@ -143,7 +143,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       const distace = Math.hypot(dx, dy);
       if (distace < this.effect.mouse.radius) {
         const angle = Math.atan2(dy, dx);
-        const force = -this.effect.mouse.radius / distace;
+        const force = distace / this.effect.mouse.radius;
         this.vx += force * Math.cos(angle);
         this.vy += force * Math.sin(angle);
       }
@@ -163,8 +163,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.logoCanvas = logoCanvas;
       this.width = this.logoCanvas.width;
       this.height = this.logoCanvas.height;
-      this.cellWidth = this.width / 24;
-      this.cellHeight = this.height / 6;
+      this.cellWidth = this.width / 32;
+      this.cellHeight = this.height / 8;
       this.cell = new Cell(this, 0, 0);
       this.imageGrid = [];
       this.createGrid();
@@ -630,38 +630,38 @@ window.addEventListener("DOMContentLoaded", (event) => {
     document.removeEventListener("keydown", handleKeyPress);
   }
 
-  let headTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: ".studio_process__wrapper",
-      start: "top top",
-      end: "bottom+=350px top",
-      scrub: 1,
-    },
-  });
-  titles.forEach(function (title) {
-    if (title) {
-      headTl
-        .to(".distort feFlood", {
-          attr: {
-            x: "1",
-            y: "1",
-            height: "10",
-            width: "10",
-          },
-          ease: "circ.out",
-        })
-        .to(
-          ".distort feMorphology",
-          {
-            attr: {
-              radius: "1",
-            },
-            ease: "circ.out",
-          },
-          "<"
-        );
-    }
-  });
+  // let headTl = gsap.timeline({
+  //   scrollTrigger: {
+  //     trigger: ".studio_process__wrapper",
+  //     start: "top top",
+  //     end: "bottom+=350px top",
+  //     scrub: 1,
+  //   },
+  // });
+  // titles.forEach(function (title) {
+  //   if (title) {
+  //     headTl
+  //       .to(".distort feFlood", {
+  //         attr: {
+  //           x: "1",
+  //           y: "1",
+  //           height: "10",
+  //           width: "10",
+  //         },
+  //         ease: "circ.out",
+  //       })
+  //       .to(
+  //         ".distort feMorphology",
+  //         {
+  //           attr: {
+  //             radius: "1",
+  //           },
+  //           ease: "circ.out",
+  //         },
+  //         "<"
+  //       );
+  //   }
+  // });
 
   //Logo Hover
   logoList.forEach(function (logo) {
