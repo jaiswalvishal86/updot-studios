@@ -18,8 +18,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
   class Pixel {
     constructor(loaderEffect, x, y, color) {
       this.effect = loaderEffect;
-      this.x = x;
-      this.y = 1 - Math.random() * this.effect.height;
+      this.x = this.effect.width * Math.random();
+      this.y = this.effect.height;
       this.originX = Math.floor(x);
       this.originY = Math.floor(y);
       this.color = color;
@@ -32,8 +32,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       context.fillRect(this.x, this.y, this.size, this.size);
     }
     update() {
-      this.x += this.originX - this.x;
-      this.y += (this.originY - this.y) * 0.1;
+      this.x += (this.originX - this.x) * Math.random() * 0.1;
+      this.y += (this.originY - this.y) * Math.random() * 0.03;
     }
   }
 
@@ -47,7 +47,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.centerY = this.height * 0.5;
       this.x = this.centerX - this.image.width * 0.5;
       this.y = this.centerY - this.image.height * 0.5;
-      this.gap = 8;
+      this.gap = 6;
     }
     init(context) {
       context.drawImage(this.image, this.x, this.y);
@@ -117,7 +117,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.image = document.getElementById("projectImage");
       this.slideX = 0;
       this.slideY = 0;
-      this.randomize = Math.random() * 10 + 1;
+      this.randomize = Math.random() * 20 + 1;
       this.vx = 0;
       this.vy = 0;
       this.ease = 0.06;
@@ -217,11 +217,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   setTimeout(() => {
     logoCanvas1 = false;
-  }, 2000);
+  }, 4000);
 
   setTimeout(() => {
     updotCanvas1 = true;
-  }, 3000);
+  }, 5000);
 
   new CircleType(document.getElementById("cookies"));
 
@@ -285,7 +285,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         duration: 0.5,
         display: "none",
       },
-      "+2"
+      "+4"
     )
     .to(
       ".grain_container",
