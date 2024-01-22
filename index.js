@@ -7,6 +7,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
   );
   const titles = document.querySelectorAll(".studio_process__heading");
 
+  const container = document.getElementById("canvasContainer");
+  let hasIntersected = false;
+
   //Loader Canvas
   const loaderCanvas = document.getElementById("canvas");
   const loaderCTX = loaderCanvas.getContext("2d");
@@ -47,7 +50,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.centerY = this.height * 0.5;
       this.x = this.centerX - this.image.width * 0.5;
       this.y = this.centerY - this.image.height * 0.5;
-      this.gap = 6;
+      this.gap = 8;
     }
     init(context) {
       context.drawImage(this.image, this.x, this.y);
@@ -95,7 +98,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
   // }
   // logoAnimate();
 
-  //Updot Canvas
+  //Updot Logo Canvas
   const logoCanvas = document.getElementById("canvas1");
   const logoCTX = logoCanvas.getContext("2d");
   let updotCanvas1 = false;
@@ -163,8 +166,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.logoCanvas = logoCanvas;
       this.width = this.logoCanvas.width;
       this.height = this.logoCanvas.height;
-      this.cellWidth = this.width / 32;
-      this.cellHeight = this.height / 8;
+      this.cellWidth = this.width / 56;
+      this.cellHeight = this.height / 14;
       this.cell = new Cell(this, 0, 0);
       this.imageGrid = [];
       this.createGrid();
@@ -221,15 +224,14 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   setTimeout(() => {
     updotCanvas1 = true;
-  }, 5000);
+  }, 5500);
 
   new CircleType(document.getElementById("cookies"));
 
   const handleSectionEnter = () => {
-    // Add an event listener to the section to disable arrow key scrolling
+    // Event listener to the section to disable arrow key scrolling
 
     document.addEventListener("keydown", function (e) {
-      // console.log(e);
       // Check if the pressed key is an arrow key (ArrowUp, ArrowDown, ArrowLeft, or ArrowRight)
       if (
         ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", " "].includes(e.key)
@@ -270,6 +272,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   grained("#grain", options);
 
+  /**
+   * Execution of Loader Timeline
+   */
   const tlLoader = gsap.timeline({
     onComplete: () => {
       bodyScroll.style.overflowY = "auto";
@@ -279,14 +284,24 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   tlLoader
     .to(
+      "#canvas",
+      {
+        rotateY: 180,
+        scale: 0,
+        duration: 0.5,
+      },
+      "<+3.5"
+    )
+    .to(
       ".studio_loader__wrapper",
       {
         opacity: 0,
         duration: 0.5,
         display: "none",
       },
-      "+4"
+      "<+0.5"
     )
+
     .to(
       ".grain_container",
       {
@@ -315,7 +330,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
   runSplit();
 
-  // Create staggered animation
+  // Create Opacity staggered animation
   function createAnimation() {
     let allMasks = $(".word")
       .map(function () {
@@ -336,30 +351,22 @@ window.addEventListener("DOMContentLoaded", (event) => {
       width: "0%",
       duration: 1.2,
       stagger: 0.2,
-    })
-      // .fromTo(
-      //   typeSplit.words,
-      //   {
-      //     opacity: 0.2,
-      //   },
-      //   {
-      //     opacity: 1,
-      //     ease: "power4.inOut",
-      //     stagger: 0.2,
-      //   }
-      // )
-      .fromTo(
-        ".highlighter",
-        {
-          width: "0%",
-        },
-        {
-          width: "100%",
-          ease: "power4.easeOut",
-          duration: 5,
-        }
-      );
+    }).fromTo(
+      ".highlighter",
+      {
+        width: "0%",
+      },
+      {
+        width: "100%",
+        ease: "power4.easeOut",
+        duration: 5,
+      }
+    );
   }
+
+  /**
+   * Tetris Game
+   */
 
   // let score = 0;
   const canvas = document.getElementById("tetris");
@@ -630,38 +637,306 @@ window.addEventListener("DOMContentLoaded", (event) => {
     document.removeEventListener("keydown", handleKeyPress);
   }
 
-  // let headTl = gsap.timeline({
-  //   scrollTrigger: {
-  //     trigger: ".studio_process__wrapper",
-  //     start: "top top",
-  //     end: "bottom+=350px top",
-  //     scrub: 1,
-  //   },
-  // });
-  // titles.forEach(function (title) {
-  //   if (title) {
-  //     headTl
-  //       .to(".distort feFlood", {
-  //         attr: {
-  //           x: "1",
-  //           y: "1",
-  //           height: "10",
-  //           width: "10",
-  //         },
-  //         ease: "circ.out",
-  //       })
-  //       .to(
-  //         ".distort feMorphology",
-  //         {
-  //           attr: {
-  //             radius: "1",
-  //           },
-  //           ease: "circ.out",
-  //         },
-  //         "<"
-  //       );
-  //   }
-  // });
+  /**
+   * WebGL Experience
+   */
+
+  function clamp(number, min, max) {
+    return Math.max(min, Math.min(number, max));
+  }
+
+  class Sketch {
+    constructor(options) {
+      this.scene = new THREE.Scene();
+
+      this.container = options.dom;
+      this.img = this.container.querySelector("img");
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+      });
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      this.renderer.setSize(this.width, this.height);
+      // this.renderer.setClearColor(0xeeeeee, 1);
+      this.renderer.physicallyCorrectLights = true;
+      this.renderer.outputEncoding = THREE.sRGBEncoding;
+
+      this.container.appendChild(this.renderer.domElement);
+
+      var frustumSize = 1;
+      var aspect = window.innerWidth / window.innerHeight;
+      this.camera = new THREE.OrthographicCamera(
+        frustumSize / -2,
+        frustumSize / 2,
+        frustumSize / 2,
+        frustumSize / -2,
+        -1000,
+        1000
+      );
+      this.camera.position.set(0, 0, 2);
+
+      this.time = 0;
+
+      this.mouse = {
+        x: 0,
+        y: 0,
+        prevX: 0,
+        prevY: 0,
+        vX: 0,
+        vY: 0,
+      };
+
+      this.isPlaying = true;
+      this.settings();
+      this.addObjects();
+      this.resize();
+      this.render();
+      this.setupResize();
+
+      this.mouseEvents();
+    }
+
+    getValue(val) {
+      return parseFloat(this.container.getAttribute("data-" + val));
+    }
+
+    mouseEvents() {
+      this.container.addEventListener("mousemove", (e) => {
+        this.mouse.x = e.clientX / this.width;
+        this.mouse.y = e.clientY / this.height;
+
+        // console.log(this.mouse.x,this.mouse.y)
+
+        this.mouse.vX = this.mouse.x - this.mouse.prevX;
+        this.mouse.vY = this.mouse.y - this.mouse.prevY;
+
+        this.mouse.prevX = this.mouse.x;
+        this.mouse.prevY = this.mouse.y;
+
+        // console.log(this.mouse.vX,'vx')
+      });
+    }
+
+    settings() {
+      let that = this;
+      this.settings = {
+        grid: this.getValue("grid") || 34, //generate how many grid
+        mouse: this.getValue("mouse") || 0.25, //mouse radius affecting the distortion
+        strength: this.getValue("strength") || 1, //higher = more parallax and distorted.
+        relaxation: this.getValue("relaxation") || 0.9, //lower = faster pixel re-sorting
+        aspectRatio: this.getValue("aspectRatio") || 1.77, //change aspectRatio according to your image size.
+      };
+    }
+
+    setupResize() {
+      window.addEventListener("resize", this.resize.bind(this));
+    }
+
+    resize() {
+      this.width = this.container.offsetWidth;
+      this.height = this.container.offsetHeight;
+      this.renderer.setSize(this.width, this.height);
+      this.camera.aspect = this.width / this.height;
+
+      // image cover
+      //image Aspect depends on your image, change accordingly
+      this.imageAspect = 1 / this.settings.aspectRatio;
+
+      let a1;
+      let a2;
+      if (this.height / this.width > this.imageAspect) {
+        a1 = (this.width / this.height) * this.imageAspect;
+        a2 = 1;
+      } else {
+        a1 = 1;
+        a2 = this.height / this.width / this.imageAspect;
+      }
+
+      this.material.uniforms.resolution.value.x = this.width;
+      this.material.uniforms.resolution.value.y = this.height;
+      this.material.uniforms.resolution.value.z = a1;
+      this.material.uniforms.resolution.value.w = a2;
+
+      this.camera.updateProjectionMatrix();
+      this.regenerateGrid();
+    }
+
+    regenerateGrid() {
+      this.size = this.settings.grid;
+
+      const width = this.size;
+      const height = this.size;
+
+      const size = width * height;
+      const data = new Float32Array(3 * size);
+      const color = new THREE.Color(0xffffff);
+
+      const r = Math.floor(color.r * 255);
+      const g = Math.floor(color.g * 255);
+      const b = Math.floor(color.b * 255);
+
+      for (let i = 0; i < size; i++) {
+        let r = Math.random() * 255 - 125;
+        let r1 = Math.random() * 255 - 125;
+
+        const stride = i * 3;
+
+        data[stride] = r;
+        data[stride + 1] = r1;
+        data[stride + 2] = r;
+      }
+
+      // used the buffer to create a DataTexture
+
+      this.texture = new THREE.DataTexture(
+        data,
+        width,
+        height,
+        THREE.RGBFormat,
+        THREE.FloatType
+      );
+
+      this.texture.magFilter = this.texture.minFilter = THREE.NearestFilter;
+
+      if (this.material) {
+        this.material.uniforms.uDataTexture.value = this.texture;
+        this.material.uniforms.uDataTexture.value.needsUpdate = true;
+      }
+    }
+
+    addObjects() {
+      this.regenerateGrid();
+      let texture = new THREE.TextureLoader().load(this.img.src, function () {
+        texture.minFilter = THREE.LinearFilter;
+        texture.generateMipmaps = false;
+        var tex = texture.clone();
+        tex.needsUpdate = true;
+      });
+      this.material = new THREE.ShaderMaterial({
+        extensions: {
+          derivatives: "#extension GL_OES_standard_derivatives : enable",
+        },
+        side: THREE.DoubleSide,
+        uniforms: {
+          time: {
+            value: 0,
+          },
+          resolution: {
+            value: new THREE.Vector4(),
+          },
+          uTexture: {
+            value: texture,
+          },
+          uDataTexture: {
+            value: this.texture,
+          },
+        },
+        vertexShader: `
+      uniform float time;
+      varying vec2 vUv;
+      varying vec3 vPosition;
+      uniform vec2 pixels;
+      float PI = 3.141592653589793238;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+      }`,
+        fragmentShader: `
+      uniform float time;
+      uniform float progress;
+      uniform sampler2D uDataTexture;
+      uniform sampler2D uTexture;
+      
+      
+      uniform vec4 resolution;
+      varying vec2 vUv;
+      varying vec3 vPosition;
+      float PI = 3.141592653589793238;
+      void main()	{
+        vec2 newUV = (vUv - vec2(0.5))*resolution.zw + vec2(0.5);
+        vec4 color = texture2D(uTexture,newUV);
+        vec4 offset = texture2D(uDataTexture,vUv);
+        gl_FragColor = vec4(vUv,0.0,1.);
+        gl_FragColor = vec4(offset.r,0.,0.,1.);
+        gl_FragColor = color;
+        gl_FragColor = texture2D(uTexture,newUV - 0.01*offset.rg);
+        // gl_FragColor = offset;
+      
+      }
+      `,
+      });
+      this.geometry = new THREE.PlaneGeometry(1, 1, 1, 1);
+
+      this.plane = new THREE.Mesh(this.geometry, this.material);
+      this.scene.add(this.plane);
+
+      this.resize();
+    }
+
+    updateDataTexture() {
+      let data = this.texture.image.data;
+      for (let i = 0; i < data.length; i += 3) {
+        data[i] *= this.settings.relaxation;
+        data[i + 1] *= this.settings.relaxation;
+      }
+
+      let gridMouseX = this.size * this.mouse.x;
+      let gridMouseY = this.size * (1 - this.mouse.y);
+      let maxDist = this.size * this.settings.mouse;
+      let aspect = this.height / this.width;
+
+      for (let i = 0; i < this.size; i++) {
+        for (let j = 0; j < this.size; j++) {
+          let distance = (gridMouseX - i) ** 2 / aspect + (gridMouseY - j) ** 2;
+          let maxDistSq = maxDist ** 2;
+
+          if (distance < maxDistSq) {
+            let index = 3 * (i + this.size * j);
+
+            let power = maxDist / Math.sqrt(distance);
+            power = clamp(power, 0, 10);
+            // if(distance <this.size/32) power = 1;
+            // power = 1;
+
+            data[index] += this.settings.strength * 100 * this.mouse.vX * power;
+            data[index + 1] -=
+              this.settings.strength * 100 * this.mouse.vY * power;
+          }
+        }
+      }
+
+      this.mouse.vX *= 0.9;
+      this.mouse.vY *= 0.9;
+      this.texture.needsUpdate = true;
+    }
+
+    render() {
+      if (!this.isPlaying) return;
+      this.time += 0.05;
+      this.updateDataTexture();
+      this.material.uniforms.time.value = this.time;
+      requestAnimationFrame(this.render.bind(this));
+      this.renderer.render(this.scene, this.camera);
+    }
+  }
+
+  const processObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasIntersected) {
+          new Sketch({
+            dom: document.getElementById("canvasContainer"),
+          });
+          hasIntersected = true;
+        }
+      });
+    },
+    { threshold: 0.5 } // Adjust the threshold as needed
+  );
+
+  processObserver.observe(container);
 
   //Logo Hover
   logoList.forEach(function (logo) {
