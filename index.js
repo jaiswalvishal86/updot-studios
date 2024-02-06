@@ -10,6 +10,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
   const container = document.getElementById("canvasContainer");
   let hasIntersected = false;
 
+  let hasServiceIntersected = false;
+
+  const matterContainer = document.querySelector("#matter-container");
+  const THICCNESS = 120;
+
   //Loader Canvas
   const loaderCanvas = document.getElementById("canvas");
   const loaderCTX = loaderCanvas.getContext("2d");
@@ -987,4 +992,401 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // Attach the timeline to the item
     logo.animationTimeline = tlm;
   });
+
+  /**
+   * MatterJS
+   */
+
+  const imageUrls = [
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb626a62c6deb7db9ec_branding.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb6f6371a9c4a15a3e3_performance.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb6a67b6251abb74bf4_marketplace.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb611a7e53ea1d21d8b_social.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb685b7ef3655329ece_video.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb6cb1ac252d3989283_influencer.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb68052e8b408b4eb83_vfx.svg",
+    "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb6632188c5c2e58e53_content.svg",
+  ];
+
+  const loadedImages = [];
+  // Function to preload images
+  function preloadImages(urls, callback) {
+    let loadedCount = 0;
+
+    // Load each image
+    urls.forEach((url) => {
+      const img = new Image();
+      img.src = url;
+
+      // Event listener for image load
+      img.onload = () => {
+        loadedCount++;
+        loadedImages.push(img);
+
+        if (loadedCount === urls.length) {
+          // All images are loaded
+          callback(loadedImages);
+        }
+      };
+
+      // Event listener for image error
+      img.onerror = () => {
+        loadedCount++;
+        console.error(`Failed to load image: ${url}`);
+
+        if (loadedCount === urls.length) {
+          // All images are either loaded or failed to load
+          callback(loadedImages);
+        }
+      };
+    });
+  }
+
+  // Example usage
+
+  const renderCanvas = () => {
+    // Create an engine
+    const engine = Matter.Engine.create();
+    engine.world.gravity.y = 1.2;
+
+    // Create a renderer
+    const render = Matter.Render.create({
+      element: matterContainer,
+      engine: engine,
+      options: {
+        width: matterContainer.clientWidth,
+        height: matterContainer.clientHeight,
+        background: "transparent",
+        wireframes: false, // Set to true for wireframe rendering
+        showAngleIndicator: false,
+      },
+    });
+
+    const boxes = [];
+
+    const branding = Matter.Bodies.rectangle(300, 0, 209, 52, {
+      torque: 0.5,
+      friction: 0.3,
+      frictionAir: 0.00001,
+      restitution: 0.7,
+      render: {
+        sprite: {
+          texture: imageUrls[0],
+        },
+      },
+    });
+
+    const performance = Matter.Bodies.rectangle(
+      matterContainer.clientWidth - 500,
+      0,
+      520,
+      53,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[1],
+          },
+        },
+      }
+    );
+
+    const marketplace = Matter.Bodies.rectangle(300, 280, 547, 52, {
+      torque: 0.5,
+      friction: 0.3,
+      frictionAir: 0.00001,
+      restitution: 0.7,
+      render: {
+        sprite: {
+          texture: imageUrls[2],
+        },
+      },
+    });
+
+    const social = Matter.Bodies.rectangle(
+      matterContainer.clientWidth - 350,
+      280,
+      537,
+      53,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[3],
+          },
+        },
+      }
+    );
+
+    const video = Matter.Bodies.rectangle(350, 540, 379, 52, {
+      torque: 0.5,
+      friction: 0.3,
+      frictionAir: 0.00001,
+      restitution: 0.7,
+      render: {
+        sprite: {
+          texture: imageUrls[4],
+        },
+      },
+    });
+
+    const influencer = Matter.Bodies.rectangle(350, 800, 479, 53, {
+      torque: 0.5,
+      friction: 0.3,
+      frictionAir: 0.00001,
+      restitution: 0.7,
+      render: {
+        sprite: {
+          texture: imageUrls[5],
+        },
+      },
+    });
+
+    const vfx = Matter.Bodies.rectangle(350, 1060, 392, 53, {
+      torque: 0.5,
+      friction: 0.3,
+      frictionAir: 0.00001,
+      restitution: 0.7,
+      render: {
+        sprite: {
+          texture: imageUrls[6],
+        },
+      },
+    });
+
+    const content = Matter.Bodies.rectangle(350, 1320, 392, 52, {
+      torque: 0.5,
+      friction: 0.3,
+      frictionAir: 0.00001,
+      restitution: 0.7,
+      render: {
+        sprite: {
+          texture: imageUrls[7],
+        },
+      },
+    });
+
+    boxes.push(
+      branding,
+      performance,
+      marketplace,
+      social,
+      video,
+      influencer,
+      vfx,
+      content
+    );
+
+    // Add bodies to the world
+    Matter.World.add(engine.world, boxes);
+
+    const ground1 = Matter.Bodies.rectangle(
+      0,
+      260,
+      matterContainer.clientWidth * 2,
+      THICCNESS,
+      {
+        isStatic: true,
+        render: {
+          fillStyle: "transparent",
+        },
+      }
+    );
+
+    const ground2 = Matter.Bodies.rectangle(
+      0,
+      520,
+      matterContainer.clientWidth * 2,
+      THICCNESS,
+      {
+        isStatic: true,
+        render: {
+          fillStyle: "transparent",
+        },
+      }
+    );
+
+    const ground3 = Matter.Bodies.rectangle(
+      0,
+      780,
+      matterContainer.clientWidth * 2,
+      THICCNESS,
+      {
+        isStatic: true,
+        render: {
+          fillStyle: "transparent",
+        },
+      }
+    );
+
+    const ground4 = Matter.Bodies.rectangle(
+      0,
+      1040,
+      matterContainer.clientWidth * 2,
+      THICCNESS,
+      {
+        isStatic: true,
+        render: {
+          fillStyle: "transparent",
+        },
+      }
+    );
+
+    const ground5 = Matter.Bodies.rectangle(
+      0,
+      1300,
+      matterContainer.clientWidth * 2,
+      THICCNESS,
+      {
+        isStatic: true,
+        render: {
+          fillStyle: "transparent",
+        },
+      }
+    );
+
+    const ground = Matter.Bodies.rectangle(
+      matterContainer.clientWidth / 2,
+      matterContainer.clientHeight - THICCNESS / 2,
+      27184,
+      THICCNESS,
+      {
+        isStatic: true,
+        render: {
+          fillStyle: "transparent",
+        },
+      }
+    );
+
+    const leftWall = Matter.Bodies.rectangle(
+      0 - THICCNESS / 2,
+      matterContainer.clientHeight / 2,
+      THICCNESS,
+      matterContainer.clientHeight * 5,
+      {
+        isStatic: true,
+      }
+    );
+
+    const rightWall = Matter.Bodies.rectangle(
+      matterContainer.clientWidth + THICCNESS / 2,
+      matterContainer.clientHeight / 2,
+      THICCNESS,
+      matterContainer.clientHeight * 5,
+      { isStatic: true }
+    );
+
+    Matter.World.add(engine.world, [
+      ground,
+      ground1,
+      ground2,
+      ground3,
+      ground4,
+      ground5,
+      leftWall,
+      rightWall,
+    ]);
+
+    let mouse = Matter.Mouse.create(render.canvas);
+    let mouseConstraint = Matter.MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: {
+          visible: false,
+        },
+      },
+    });
+
+    Matter.Composite.add(engine.world, mouseConstraint);
+
+    // Add gravity
+    Matter.World.add(
+      engine.world,
+      Matter.Constraint.create({
+        pointA: { x: 0, y: 0 },
+        // bodyB: boxes[0],
+        pointB: { x: 0, y: 0 },
+        length: 0.01,
+        stiffness: 0.1,
+      })
+    );
+
+    // Run the renderer
+    Matter.Render.run(render);
+
+    // create runner
+    const runner = Matter.Runner.create();
+
+    // Run the engine
+    Matter.Runner.run(runner, engine);
+
+    function handleResize(matterContainer) {
+      // set canvas size to new values
+      render.canvas.width = matterContainer.clientWidth;
+      render.canvas.height = matterContainer.clientHeight;
+
+      //Reposition ground
+      Matter.Body.setPosition(
+        ground,
+        Matter.Vector.create(
+          matterContainer.clientWidth / 2,
+          matterContainer.clientHeight + THICCNESS / 2
+        )
+      );
+
+      //Reposition Right Wall
+      Matter.Body.setPosition(
+        rightWall,
+        Matter.Vector.create(
+          matterContainer.clientWidth + THICCNESS / 2,
+          matterContainer.clientHeight / 2
+        )
+      );
+    }
+
+    // Adjust the canvas size on window resize
+    window.addEventListener("resize", () => handleResize(matterContainer));
+
+    setTimeout(() => {
+      Matter.Composite.remove(engine.world, [
+        ground1,
+        ground2,
+        ground3,
+        ground4,
+        ground5,
+      ]);
+    }, 3000);
+  };
+
+  const matterScrollOptions = {
+    root: null, // use the viewport as the root
+    rootMargin: "0px", // no margin
+    threshold: 0.5, // trigger when 50% of the target is visible
+  };
+
+  const serviceObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasServiceIntersected) {
+          preloadImages(imageUrls, (loadedImages) => {
+            console.log("All images are preloaded:", loadedImages);
+            // Now you can use the preloaded images in your application
+            renderCanvas();
+          });
+
+          hasServiceIntersected = true;
+        }
+      });
+    },
+    matterScrollOptions // Adjust the threshold as needed
+  );
+
+  serviceObserver.observe(matterContainer);
 });
