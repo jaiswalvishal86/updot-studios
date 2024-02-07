@@ -1094,21 +1094,27 @@ window.addEventListener("DOMContentLoaded", (event) => {
       }
     );
 
-    const marketplace = Matter.Bodies.rectangle(300, 280, 547, 52, {
-      torque: 0.5,
-      friction: 0.3,
-      frictionAir: 0.00001,
-      restitution: 0.7,
-      render: {
-        sprite: {
-          texture: imageUrls[2],
+    const marketplace = Matter.Bodies.rectangle(
+      300,
+      matterContainer.clientHeight * 0.25,
+      547,
+      52,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[2],
+          },
         },
-      },
-    });
+      }
+    );
 
     const social = Matter.Bodies.rectangle(
       matterContainer.clientWidth - 350,
-      280,
+      matterContainer.clientHeight * 0.25,
       537,
       53,
       {
@@ -1124,53 +1130,77 @@ window.addEventListener("DOMContentLoaded", (event) => {
       }
     );
 
-    const video = Matter.Bodies.rectangle(350, 540, 379, 52, {
-      torque: 0.5,
-      friction: 0.3,
-      frictionAir: 0.00001,
-      restitution: 0.7,
-      render: {
-        sprite: {
-          texture: imageUrls[4],
+    const video = Matter.Bodies.rectangle(
+      350,
+      matterContainer.clientHeight * 0.4,
+      379,
+      52,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[4],
+          },
         },
-      },
-    });
+      }
+    );
 
-    const influencer = Matter.Bodies.rectangle(350, 800, 479, 53, {
-      torque: 0.5,
-      friction: 0.3,
-      frictionAir: 0.00001,
-      restitution: 0.7,
-      render: {
-        sprite: {
-          texture: imageUrls[5],
+    const influencer = Matter.Bodies.rectangle(
+      350,
+      matterContainer.clientHeight * 0.56,
+      479,
+      53,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[5],
+          },
         },
-      },
-    });
+      }
+    );
 
-    const vfx = Matter.Bodies.rectangle(350, 1060, 392, 53, {
-      torque: 0.5,
-      friction: 0.3,
-      frictionAir: 0.00001,
-      restitution: 0.7,
-      render: {
-        sprite: {
-          texture: imageUrls[6],
+    const vfx = Matter.Bodies.rectangle(
+      350,
+      matterContainer.clientHeight * 0.71,
+      392,
+      53,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[6],
+          },
         },
-      },
-    });
+      }
+    );
 
-    const content = Matter.Bodies.rectangle(350, 1320, 392, 52, {
-      torque: 0.5,
-      friction: 0.3,
-      frictionAir: 0.00001,
-      restitution: 0.7,
-      render: {
-        sprite: {
-          texture: imageUrls[7],
+    const content = Matter.Bodies.rectangle(
+      350,
+      matterContainer.clientHeight * 0.88,
+      392,
+      52,
+      {
+        torque: 0.5,
+        friction: 0.3,
+        frictionAir: 0.00001,
+        restitution: 0.7,
+        render: {
+          sprite: {
+            texture: imageUrls[7],
+          },
         },
-      },
-    });
+      }
+    );
 
     boxes.push(
       branding,
@@ -1188,7 +1218,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     const ground1 = Matter.Bodies.rectangle(
       0,
-      260,
+      matterContainer.clientHeight * 0.2,
       matterContainer.clientWidth * 2,
       THICCNESS,
       {
@@ -1201,7 +1231,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     const ground2 = Matter.Bodies.rectangle(
       0,
-      520,
+      matterContainer.clientHeight * 0.38,
       matterContainer.clientWidth * 2,
       THICCNESS,
       {
@@ -1214,7 +1244,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     const ground3 = Matter.Bodies.rectangle(
       0,
-      780,
+      matterContainer.clientHeight * 0.54,
       matterContainer.clientWidth * 2,
       THICCNESS,
       {
@@ -1227,7 +1257,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     const ground4 = Matter.Bodies.rectangle(
       0,
-      1040,
+      matterContainer.clientHeight * 0.7,
       matterContainer.clientWidth * 2,
       THICCNESS,
       {
@@ -1240,7 +1270,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     const ground5 = Matter.Bodies.rectangle(
       0,
-      1300,
+      matterContainer.clientHeight * 0.87,
       matterContainer.clientWidth * 2,
       THICCNESS,
       {
@@ -1253,7 +1283,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     const ground = Matter.Bodies.rectangle(
       matterContainer.clientWidth / 2,
-      matterContainer.clientHeight - THICCNESS / 2,
+      matterContainer.clientHeight + THICCNESS / 6,
       27184,
       THICCNESS,
       {
@@ -1354,15 +1384,26 @@ window.addEventListener("DOMContentLoaded", (event) => {
     // Adjust the canvas size on window resize
     window.addEventListener("resize", () => handleResize(matterContainer));
 
-    setTimeout(() => {
-      Matter.Composite.remove(engine.world, [
-        ground1,
-        ground2,
-        ground3,
-        ground4,
-        ground5,
-      ]);
-    }, 3000);
+    window.addEventListener("scroll", function () {
+      let matterContainerPosition = matterContainer.getBoundingClientRect().y;
+
+      // Check if the box touches or goes above the top of the viewport
+      if (matterContainerPosition <= -branding.position.y) {
+        Matter.Composite.remove(engine.world, ground1);
+      }
+      if (matterContainerPosition <= -marketplace.position.y) {
+        Matter.Composite.remove(engine.world, ground2);
+      }
+      if (matterContainerPosition <= -video.position.y) {
+        Matter.Composite.remove(engine.world, ground3);
+      }
+      if (matterContainerPosition <= -influencer.position.y) {
+        Matter.Composite.remove(engine.world, ground4);
+      }
+      if (matterContainerPosition <= -vfx.position.y) {
+        Matter.Composite.remove(engine.world, ground5);
+      }
+    });
   };
 
   const matterScrollOptions = {
@@ -1371,22 +1412,23 @@ window.addEventListener("DOMContentLoaded", (event) => {
     threshold: 0.5, // trigger when 50% of the target is visible
   };
 
-  const serviceObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting && !hasServiceIntersected) {
-          preloadImages(imageUrls, (loadedImages) => {
-            console.log("All images are preloaded:", loadedImages);
-            // Now you can use the preloaded images in your application
-            renderCanvas();
-          });
+  preloadImages(imageUrls, (loadedImages) => {
+    console.log("All images are preloaded:", loadedImages);
+    // Now you can use the preloaded images in your application
+    renderCanvas();
+  });
 
-          hasServiceIntersected = true;
-        }
-      });
-    },
-    matterScrollOptions // Adjust the threshold as needed
-  );
+  // const serviceObserver = new IntersectionObserver(
+  //   (entries) => {
+  //     entries.forEach((entry) => {
+  //       if (entry.isIntersecting && !hasServiceIntersected) {
 
-  serviceObserver.observe(matterContainer);
+  //         hasServiceIntersected = true;
+  //       }
+  //     });
+  //   },
+  //   matterScrollOptions // Adjust the threshold as needed
+  // );
+
+  // serviceObserver.observe(matterContainer);
 });
