@@ -13,6 +13,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
   let hasServiceIntersected = false;
 
   const matterContainer = document.querySelector("#matter-container");
+  const matterBottomContainer = document.querySelector(
+    "#matterBottomContainer"
+  );
   const THICCNESS = 120;
 
   //Loader Canvas
@@ -1056,7 +1059,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
     });
   }
 
-  // Example usage
+  // Matter usage
 
   const renderCanvas = () => {
     // Create an engine
@@ -1436,35 +1439,220 @@ window.addEventListener("DOMContentLoaded", (event) => {
       let matterContainerPosition = matterContainer.getBoundingClientRect().y;
 
       // Check if the box touches or goes above the top of the viewport
-      if (matterContainerPosition <= -branding.position.y) {
+      if (
+        matterContainerPosition <=
+        -branding.position.y + (branding.bounds.max.y - branding.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground1);
       }
-      if (matterContainerPosition <= -performance.position.y) {
+      if (
+        matterContainerPosition <=
+        -performance.position.y +
+          (performance.bounds.max.y - performance.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground2);
       }
-      if (matterContainerPosition <= -social.position.y) {
+      if (
+        matterContainerPosition <=
+        -social.position.y + (social.bounds.max.y - social.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground3);
       }
-      if (matterContainerPosition <= -marketplace.position.y) {
+      if (
+        matterContainerPosition <=
+        -marketplace.position.y +
+          (marketplace.bounds.max.y - marketplace.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground4);
       }
-      if (matterContainerPosition <= -video.position.y) {
+      if (
+        matterContainerPosition <=
+        -video.position.y + (video.bounds.max.y - video.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground5);
       }
-      if (matterContainerPosition <= -influencer.position.y) {
+      if (
+        matterContainerPosition <=
+        -influencer.position.y +
+          (influencer.bounds.max.y - influencer.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground6);
       }
-      if (matterContainerPosition <= -vfx.position.y) {
+      if (
+        matterContainerPosition <=
+        -vfx.position.y + (vfx.bounds.max.y - vfx.bounds.min.y)
+      ) {
         Matter.Composite.remove(engine.world, ground7);
       }
     });
   };
 
-  const matterScrollOptions = {
-    root: null, // use the viewport as the root
-    rootMargin: "0px", // no margin
-    threshold: 0.5, // trigger when 50% of the target is visible
+  const renderBottomCanvas = () => {
+    let Engine = Matter.Engine,
+      Render = Matter.Render,
+      Runner = Matter.Runner,
+      Bodies = Matter.Bodies,
+      Composite = Matter.Composite;
+
+    // create an engine
+    let engine = Engine.create();
+
+    // create a renderer
+    let render = Render.create({
+      element: matterBottomContainer,
+      engine: engine,
+      options: {
+        width: matterBottomContainer.clientWidth,
+        height: matterBottomContainer.clientHeight,
+        background: "transparent",
+        wireframes: false,
+        showAngleIndicator: false,
+      },
+    });
+
+    const boxSize = 50;
+    const boxCount = 5;
+    const boxes = [];
+
+    for (let i = 0; i < boxCount; i++) {
+      const body = Matter.Bodies.rectangle(
+        Math.random() * matterBottomContainer.clientWidth,
+        -i * 50,
+        135,
+        135,
+        {
+          torque: 0.4,
+          friction: 0.3,
+          frictionAir: 0.00001,
+          restitution: 0.7,
+          render: {
+            sprite: {
+              texture:
+                "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65d5bd9031aade3bf31a574a_ushape2.svg",
+            },
+          },
+        }
+      );
+      const circle = Bodies.circle(
+        Math.random() * matterContainer.clientWidth,
+        -i * 50,
+        boxSize,
+        // boxSize,
+        {
+          friction: 0.3,
+          frictionAir: 0.00001,
+          restitution: 0.8,
+          render: {
+            fillStyle: "transparent",
+            strokeStyle: "white",
+            lineWidth: 1,
+          },
+        }
+      );
+      boxes.push(body, circle);
+      Composite.add(engine.world, [body, circle]);
+    }
+
+    let ground = Bodies.rectangle(
+      matterBottomContainer.clientWidth / 2,
+      matterBottomContainer.clientHeight + THICCNESS / 2,
+      27184,
+      THICCNESS,
+      { isStatic: true }
+    );
+
+    let leftWall = Bodies.rectangle(
+      0 - THICCNESS / 2,
+      matterBottomContainer.clientHeight / 2,
+      THICCNESS,
+      matterBottomContainer.clientHeight * 5,
+      {
+        isStatic: true,
+      }
+    );
+
+    let rightWall = Bodies.rectangle(
+      matterBottomContainer.clientWidth + THICCNESS / 2,
+      matterBottomContainer.clientHeight / 2,
+      THICCNESS,
+      matterBottomContainer.clientHeight * 5,
+      { isStatic: true }
+    );
+
+    // add all of the bodies to the world
+    Composite.add(engine.world, [ground, leftWall, rightWall]);
+
+    let matterMouse = Matter.Mouse.create(render.canvas);
+    let mouseConstraint = Matter.MouseConstraint.create(engine, {
+      mouse: matterMouse,
+      constraint: {
+        stiffness: 0.2,
+        render: {
+          visible: false,
+        },
+      },
+    });
+
+    Composite.add(engine.world, mouseConstraint);
+
+    // allow scroll through the canvas
+    mouseConstraint.mouse.element.removeEventListener(
+      "mousewheel",
+      mouseConstraint.mouse.mousewheel
+    );
+    mouseConstraint.mouse.element.removeEventListener(
+      "DOMMouseScroll",
+      mouseConstraint.mouse.mousewheel
+    );
+
+    // run the renderer
+    Render.run(render);
+
+    // create runner
+    var runner = Runner.create();
+
+    // run the engine
+    Runner.run(runner, engine);
+
+    function handleResize(matterBottomContainer) {
+      // set canvas size to new values
+      render.canvas.width = matterBottomContainer.clientWidth;
+      render.canvas.height = matterBottomContainer.clientHeight;
+
+      // reposition ground
+      Matter.Body.setPosition(
+        ground,
+        Matter.Vector.create(
+          matterBottomContainer.clientWidth / 2,
+          matterBottomContainer.clientHeight + THICCNESS / 2
+        )
+      );
+
+      // reposition right wall
+      Matter.Body.setPosition(
+        rightWall,
+        Matter.Vector.create(
+          matterBottomContainer.clientWidth + THICCNESS / 2,
+          matterBottomContainer.clientHeight / 2
+        )
+      );
+    }
+
+    window.addEventListener("resize", () =>
+      handleResize(matterBottomContainer)
+    );
   };
+
+  ScrollTrigger.create({
+    trigger: matterBottomContainer,
+    onEnter: renderBottomCanvas,
+    once: true,
+    start: "top top",
+    end: "bottom bottom",
+    // onLeave: myLeaveFunc,
+    // onEnterBack: myEnterFunc,
+    // onLeaveBack: myLeaveFunc
+  });
 
   preloadImages(imageUrls, (loadedImages) => {
     console.log("All images are preloaded:", loadedImages);
