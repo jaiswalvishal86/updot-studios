@@ -8,6 +8,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
   const titles = document.querySelectorAll(".studio_process__heading");
 
   const container = document.getElementById("canvasContainer");
+  const workContainer = document.getElementById("workContainer");
+  const ideateWrapper = document.getElementById("ideateWrapper");
   let hasIntersected = false;
 
   let hasServiceIntersected = false;
@@ -649,6 +651,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
    * WebGL Experience
    */
 
+  let isAnimationRunning = true;
+
   function clamp(number, min, max) {
     return Math.max(min, Math.min(number, max));
   }
@@ -702,8 +706,8 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.resize();
       this.render();
       this.setupResize();
-
       this.mouseEvents();
+      // this.checkViewport();
     }
 
     getValue(val) {
@@ -925,8 +929,27 @@ window.addEventListener("DOMContentLoaded", (event) => {
       this.time += 0.05;
       this.updateDataTexture();
       this.material.uniforms.time.value = this.time;
-      requestAnimationFrame(this.render.bind(this));
-      this.renderer.render(this.scene, this.camera);
+      if (isAnimationRunning) {
+        requestAnimationFrame(this.render.bind(this));
+        this.renderer.render(this.scene, this.camera);
+      }
+    }
+
+    checkViewport() {
+      const observer = new IntersectionObserver((entries) => {
+        const isInViewport = entries[0].isIntersecting;
+
+        if (isInViewport) {
+          // Start the animation
+          isAnimationRunning = true;
+          animate();
+        } else {
+          // Stop the animation
+          isAnimationRunning = false;
+        }
+      });
+
+      observer.observe(container);
     }
   }
 
@@ -937,14 +960,15 @@ window.addEventListener("DOMContentLoaded", (event) => {
           new Sketch({
             dom: document.getElementById("canvasContainer"),
           });
+          ideateWrapper.style.display = "none";
           hasIntersected = true;
         }
       });
     },
-    { threshold: 0.5 } // Adjust the threshold as needed
+    { threshold: 0.75 } // Adjust the threshold as needed
   );
 
-  processObserver.observe(container);
+  processObserver.observe(workContainer);
 
   //Logo Hover
   logoList.forEach(function (logo) {
