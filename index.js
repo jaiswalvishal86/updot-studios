@@ -54,11 +54,13 @@ window.addEventListener("DOMContentLoaded", (event) => {
     const textSplit = SplitType.create("#cookies");
 
     cookiesWrapper.addEventListener("click", function () {
-      gsap.to(textSplit.chars, {
-        y: 200,
-        delay: 4,
-        ease: "sine.easeOut",
-        stagger: { from: "random", amount: 0.8, ease: "power4.inOut" },
+      gsap.to("#cookies span", {
+        y: 250,
+        opacity: 0,
+        delay: 1.5,
+        duration: 0.8,
+        ease: "ease.inOut",
+        stagger: { from: "end", amount: 0.3, ease: "circ.inOut" },
       });
     });
 
@@ -278,7 +280,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       updotCanvas1 = true;
     }, 8000);
 
-    new CircleType(document.getElementById("cookies"));
+    new CircleType(document.getElementById("cookies")).radius(60);
 
     const handleSectionEnter = () => {
       // Event listener to the section to disable arrow key scrolling
@@ -316,12 +318,12 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     var options = {
       animate: true,
-      patternWidth: 200,
-      patternHeight: 200,
+      patternWidth: 100,
+      patternHeight: 100,
       grainOpacity: 0.05,
-      grainDensity: 1,
-      grainWidth: 1,
-      grainHeight: 1,
+      grainDensity: 1.5,
+      grainWidth: 2,
+      grainHeight: 2,
     };
 
     grained("#grain", options);
@@ -331,7 +333,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
      */
     const tlLoader = gsap.timeline({
       onComplete: () => {
-        bodyScroll.style.overflowY = "auto";
+        bodyScroll.style.overflowY = "visible";
         bodyScroll.style.height = "auto";
       },
     });
@@ -406,6 +408,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       link.addEventListener("mouseenter", function () {
         gsap.to(letters, {
           yPercent: -100,
+          delay: 0.05,
           duration: 0.5,
           ease: "power4.inOut",
           stagger: { each: 0.02 },
@@ -465,7 +468,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       tl.to(allMasks, {
         width: "0%",
         duration: 1.2,
-        stagger: 0.2,
+        stagger: 1,
       }).fromTo(
         ".highlighter",
         {
@@ -1284,7 +1287,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
           height: matterContainer.clientHeight,
           background: "transparent",
           wireframes: false, // Set to true for wireframe rendering
-          showAngleIndicator: false,
+          showAngleIndicator: true,
         },
       });
 
@@ -1296,9 +1299,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         209,
         52,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[0],
@@ -1313,9 +1316,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         520,
         53,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[1],
@@ -1330,9 +1333,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         547,
         52,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[2],
@@ -1347,9 +1350,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         537,
         53,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[3],
@@ -1364,9 +1367,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         379,
         52,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[4],
@@ -1381,9 +1384,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         479,
         53,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[5],
@@ -1398,9 +1401,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         392,
         53,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[6],
@@ -1415,9 +1418,9 @@ window.addEventListener("DOMContentLoaded", (event) => {
         392,
         52,
         {
-          friction: 0.4,
+          friction: 0.3,
           frictionAir: 0.00001,
-          restitution: 0.7,
+          restitution: 0.3,
           render: {
             sprite: {
               texture: imageUrls[7],
@@ -1715,7 +1718,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
         },
       });
 
-      const boxSize = 50;
+      // const boxSize = 50;
       const boxCount = 6;
       const boxes = [];
 
