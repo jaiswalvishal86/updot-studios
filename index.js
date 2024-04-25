@@ -19,6 +19,8 @@ const cookiesWrapper = document.getElementById("cookies-wrapper");
 
 const landscapePrompt = document.querySelector(".landscape-mode");
 
+const submitBtn = document.getElementById("submit");
+
 // Function to check if the device is in landscape mode
 function isLandscape() {
   return window.innerWidth > window.innerHeight;
@@ -55,14 +57,63 @@ window.addEventListener("DOMContentLoaded", (event) => {
 
     cookiesWrapper.addEventListener("click", function () {
       gsap.to("#cookies span", {
-        y: 250,
-        opacity: 0,
+        y: 400,
+        // opacity: 0,
         delay: 1.5,
-        duration: 0.8,
+        duration: 2,
         ease: "ease.inOut",
-        stagger: { from: "end", amount: 0.3, ease: "circ.inOut" },
+        stagger: { from: "random", amount: 0.5, ease: "ease.inOut" },
       });
     });
+
+    // gsap.to("#reveal-row", {
+    //   transform: "translate(-108vw, 96%)",
+    //   ease: "power3.inOut",
+    //   scrollTrigger: {
+    //     id: "reveal-scrolltrigger",
+    //     trigger: "#reveal-section",
+    //     scrub: 1,
+    //     once: true,
+    //     start: "top",
+    //     end: `+=${window.innerHeight * 10}px`,
+    //     anticipatePin: 1,
+    //     pinType: "fixed",
+    //     pin: "#reveal-section",
+    //     pinSpacing: true,
+    // onUpdate: (self) => {
+    //   if (self.progress > 0.9) {
+    //     gsap.to("#ideate-str", {
+    //       transform: "translateX(8vw)",
+    //       duration: 1.2,
+    //       ease: "power3.out"
+    //     });
+    //     gsap.to("#create-str", {
+    //       transform: "translateX(-5vw)",
+    //       duration: 1.2,
+    //       ease: "power3.out"
+    //     });
+    //     gsap.to("#refine-str", {
+    //       transform: "translateY(16%)",
+    //       duration: 1,
+    //       ease: "power3.out"
+    //     });
+    //     gsap.to("#scribble-path", {
+    //       delay: 0.5,
+    //       duration: 1.2,
+    //       strokeDashoffset: 0,
+    //       ease: "none"
+    //     });
+    //   }
+    // },
+    // onLeave: () => {
+    //   ScrollTrigger.getById("reveal-scrolltrigger").kill(true);
+    //   gsap.to("#reveal-row", {
+    //     duration: 0,
+    //     transform: "translate(-108vw, 96%)",
+    //   });
+    // },
+    //   },
+    // });
 
     //Loader Canvas
     const loaderCanvas = document.getElementById("canvas");
@@ -468,7 +519,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       tl.to(allMasks, {
         width: "0%",
         duration: 1.2,
-        stagger: 1,
+        stagger: 0.6,
       }).fromTo(
         ".highlighter",
         {
@@ -1235,6 +1286,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
       "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb6cb1ac252d3989283_influencer.svg",
       "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb68052e8b408b4eb83_vfx.svg",
       "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/65c1cdb6632188c5c2e58e53_content.svg",
+      "https://uploads-ssl.webflow.com/644a11bb13c4d70ea3d13d26/662a237a85c2c703cd6bee25_submit.svg",
     ];
 
     const loadedImages = [];
@@ -1286,8 +1338,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
           width: matterContainer.clientWidth,
           height: matterContainer.clientHeight,
           background: "transparent",
-          wireframes: false, // Set to true for wireframe rendering
-          showAngleIndicator: true,
+          wireframes: false,
         },
       });
 
@@ -1750,6 +1801,7 @@ window.addEventListener("DOMContentLoaded", (event) => {
               },
             }
           );
+
           Composite.add(engine.world, svgBody);
         });
       }
@@ -1804,6 +1856,27 @@ window.addEventListener("DOMContentLoaded", (event) => {
         matterBottomContainer.clientHeight * 5,
         { isStatic: true }
       );
+
+      submitBtn.addEventListener("click", function () {
+        let submit = Matter.Bodies.rectangle(
+          matterBottomContainer.clientWidth / 2,
+          matterBottomContainer.clientHeight / 2 + THICCNESS,
+          161,
+          72,
+          {
+            friction: 0.3,
+            frictionAir: 0.00001,
+            restitution: 0.3,
+            render: {
+              sprite: {
+                texture: imageUrls[8],
+              },
+            },
+          }
+        );
+        Composite.add(engine.world, submit);
+        submitBtn.style.display = "none";
+      });
 
       // add all of the bodies to the world
       Composite.add(engine.world, [ground, leftWall, rightWall]);
